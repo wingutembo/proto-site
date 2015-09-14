@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * @license Copyright (c) 2011, 2013 IBM Corporation and others. All rights
+ *          reserved. This program and the accompanying materials are made
+ *          available under the terms of the Eclipse Public License v1.0
+ *          (http://www.eclipse.org/legal/epl-v10.html), and the Eclipse
+ *          Distribution License v1.0
+ *          (http://www.eclipse.org/org/documents/edl-v10.html).
+ * 
+ * Contributors: IBM Corporation - initial API and implementation
+ ******************************************************************************/
+ 
+/*eslint-env browser, amd*/
+
+define([ 'i18n!git/nls/gitmessages', 'orion/webui/dialog', 'orion/xsrfUtils' ], function(messages, dialog, xsrfUtils) {
+
+	function ApplyPatchDialog(options) {
+		this._init(options);
+	}
+
+	ApplyPatchDialog.prototype = new dialog.Dialog();
+
+	ApplyPatchDialog.prototype.TEMPLATE =
+
+	'<div style="padding:4px"><input type="radio" name="radio" value="urlRadio" id="urlRadio" checked/>' +
+		messages["URL:"] + '<input type="text" name="url" id="patchurl"/></div>' +
+	'<div style="padding:4px"><input type="radio" name="radio" value="fileRadio" id="fileRadio"/>' +
+		messages["File:"] + '<input type="file" name="selectedFile" id="selectedFile" class="uploadChooser" />' +
+	'</div>';
+
+	ApplyPatchDialog.prototype._init = function(options) {
+		var that = this;
+
+		this.title = messages["ApplyPatchDialog"];
+		this.modal = true;
+		this.messages = messages;
+		this.options = options;
+		this.customFocus = true;
+
+		this.buttons = [];
+
+		this.buttons.push({ callback : function() {
+			that._applyPatch();
+		},
+		text : messages["OK"]
+		});
+		
+
+		// Start the dialog initialization.
+		this._initialize();
+	};
+
+	ApplyPatchDialog.prototype._bindToDom = function(parent) {
+		var urlField = this.$patchurl;
+		this.$selectedFile.onchange = function(event){
+			this.$urlRadio.checked = false;
+			this.$fileRadio.checked = "fileRadio";
+		}.bind(this);
+		this.$patchurl.onchange = function(event){
+			this.$urlRadio.checked = "urlRadio";
+			this.$fileRadio.checked = false;
+		}.bind(this);
+		window.setTimeout(function () {urlField.focus();}, 0);
+	};
+
+	ApplyPatchDialog.prototype._applyPatch = function(parent) {
+		var formData = new FormData();
+		formData.append("uploadedfile", this.$selectedFile.files[0]);
+		formData.append("url", this.$patchurl.value);
+		formData.append("radio", this.$fileRadio.checked ? "fileRadio" : "urlRadio");
+
+		this.req = new XMLHttpRequest();
+		this.req.open('post', this.options.diffLocation);
+		this.req.setRequestHeader("Orion-Version", "1");
+		this.req.onreadystatechange = this.handleReadyState.bind(this);
+		xsrfUtils.addCSRFNonce(this.req);
+		this.req.send(formData);
+	};
+
+	ApplyPatchDialog.prototype.handleReadyState = function(state) {
+		if (this.req.readyState === 4) {
+			if(this.req.status === 200){
+				if(this.options.deferred){
+					this.options.deferred.resolve(this.req.responseText);
+				}
+			} else {
+				if(this.options.deferred){
+					this.options.deferred.reject(this.req.responseText);
+				}
+			}
+			this.hide();
+		}
+	};
+
+	ApplyPatchDialog.prototype.constructor = ApplyPatchDialog;
+
+	// return the module exports
+	return { ApplyPatchDialog : ApplyPatchDialog
+	};
+
+});

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <head>
+		<meta name="copyright" content="Copyright (c) IBM Corporation and others 2011, 2014." >
+		<meta http-equiv="Content-Language" content="en-us">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Git</title>
+		<link rel="stylesheet" type="text/css" href="git-repository.css" />
+		<link rel="icon" href="images/git.png" type="image/png">
+		<script src="../requirejs/require.js"></script>
+		<script>
+			/*eslint-env browser, amd*/
+			require(["../orion/require-config.js"], function(config){
+				require(["git/git-repository"], null, config.errback);
+			});
+		</script>
+</head>
+	<body id="orion-repository" class="orionPage">
+		<div id="sideMenu" class="sideMenu"></div>
+		<div id="pageContent" class="content-fixedHeight">
+			<div id="sideMenuToggle" class="sideMenuToggle"></div>
+			<div id="pageToolbar" class="mainToolbar toolComposite toolbarLayout"></div>
+			<div id="innerPanels" class="innerPanels">
+				<div id="leftPane" class="auxpane sidePanelLayout hasSplit">
+					<div class="fixedToolbarHolder sidebarWrapper">
+						<div id="sidebar" class="dropdownTrigger toolbarTarget sidebar"></div>
+					</div>
+				</div>
+				<div class="split splitLayout"></div>
+				<div id="rightPane" class="mainpane mainPanelLayout hasSplit">
+					<div class="fixedToolbarHolder">
+						<div id="table" class="workingTarget"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-fixed-bottom footer" id="footer"></div>
+		<div id="splash" class="splash">
+			<div class="splashProgress">
+				<span class="core-sprite-progress">
+				</span>
+				<span id="splashProgress" class="splashProgressLabel">Loading...</span>
+			</div>
+		</div>
+		<script type="text/javascript">
+			if (localStorage.showSplash) {
+				document.getElementById("splash").classList.add("splashShown");
+			}
+		</script>
+	</body>
+</html>

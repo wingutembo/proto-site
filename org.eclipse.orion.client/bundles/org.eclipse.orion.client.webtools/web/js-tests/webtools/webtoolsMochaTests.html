@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Webtools Mocha Tests</title>
+	<link rel="stylesheet" href="../../mocha/mocha.css" />
+	<script src="../../requirejs/require.js"></script>
+	<script>
+		/*eslint-env browser, amd*/
+		/* eslint-disable missing-nls */
+		require({
+		baseUrl: "../../",
+		paths: {
+			text: "requirejs/text",
+			i18n: "requirejs/i18n",
+			csslint: "csslint/csslint"
+		}
+	});
+	require(["mocha/sauce"], function(mocha) {
+		mocha.setup("bdd");
+		require([
+			"js-tests/webtools/cssOutlinerTests",
+			"js-tests/webtools/cssQuickFixTests",
+			"js-tests/webtools/cssValidatorTests",
+			"js-tests/webtools/cssParserTests",
+			"js-tests/webtools/utilTests",
+			"js-tests/webtools/htmlParserTests",
+			"js-tests/webtools/htmlContentAssistTests"
+		], function(){
+			mocha.run();
+		});
+	});
+	</script>
+</head>
+<body>
+	<div id="mocha">
+		<h1>Webtools Mocha Tests</h1>
+	</div>
+</body>
+</html>

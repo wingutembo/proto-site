@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src='../../requirejs/require.js'></script>
+	<script>
+		/*eslint-env browser, amd*/
+		require({
+		  baseUrl: '../../',
+		  paths: {
+			  text: 'requirejs/text',
+			  i18n: 'requirejs/i18n',
+			  domReady: 'requirejs/domReady'
+		  }
+		});
+
+		require(["plugins/site/sitePlugin"], function(plugin) {
+			plugin.connect();
+		});
+	</script>
+</head>
+<body>
+</body>
+</html>
